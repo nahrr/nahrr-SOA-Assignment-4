@@ -14,17 +14,9 @@ namespace Assignment4.Controllers
 
     public class SearchController : ControllerBase
     {
-        private string search;
-
-        
-        public SearchController(string search)
-        {
-           this.search = search;
-        }
-
-
+       
         [Route("{courseCode}")]
-        [HttpGet]
+        [HttpPost]
         public string GetCourseCode(string courseCode)
         {
             if (string.IsNullOrEmpty(courseCode))
@@ -32,7 +24,7 @@ namespace Assignment4.Controllers
                 throw new ArgumentException($"'{nameof(courseCode)}' cannot be null or empty", nameof(courseCode));
             }
 
-            return courseCode;
+            return $"Det fungerar" + courseCode;
         }
 
     }
