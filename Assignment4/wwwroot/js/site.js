@@ -2,22 +2,10 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-//document.getElementById('searchBar').onkeypress = function (e) {
-//    if (e.keyCode == 13) {
-//        document.getElementById('searchBar').click();
-//    }
-//}
-//44387
 
-function searchValue() {
-
-        var searchWord = document.getElementById('searchBar').value;
-        sendValue(searchWord);
-}   
-
+// Skickar värdet från searchBar till controller
 function sendValue() {
 
-   // var search = searchObj;
     var search = document.getElementById('searchBar').value;
 
         console.log("test");
@@ -42,8 +30,6 @@ function sendValue() {
                 alert("error " + search);
             }
         });
-    
-
 }
 
 
