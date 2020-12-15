@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Assignment4.Controllers
 {
@@ -14,7 +16,9 @@ namespace Assignment4.Controllers
 
     public class SearchController : ControllerBase
     {
-       
+
+        public string searchUrl = "";
+
         [Route("{courseCode}")]
         [HttpPost]
         //Tar sökinput från frontend
@@ -34,16 +38,22 @@ namespace Assignment4.Controllers
             //pepeHacker
             string sourceUrl = "https://cloud.timeedit.net/ltu/web/schedule1/objects.txt?max=15&fr=t&partajax=t&im=f&sid=3&l=sv_SE&search_text=course&types=28";
 
-            var searchUrl = sourceUrl.Replace("course", courseCode);
-
+            searchUrl = sourceUrl.Replace("course", courseCode);
+            GetObjectIdByCourseCode(searchUrl);
             return "";
         }
 
-        public string GetObjectIdByCourseCode(string courseCode)
+        //Tar ut objectid för aktuell kurs från JSON-data (första träffen i records)
+        public string GetObjectIdByCourseCode(string searchUrl)
         {
-            return "";
-        }
+            var jsonData = new WebClient().DownloadString(searchUrl);
 
+            var userObj = JObject.Parse(jsonData);
+            string objectId = userObj.SelectToken("records[0].idAndType")
+                .ToString();
+
+            return objectId;
+        }
     }
 }
 
