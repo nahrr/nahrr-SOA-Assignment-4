@@ -6,12 +6,16 @@
 // Skickar värdet från searchBar till controller
 function sendValue() {
 
-    var search = document.getElementById('searchBar').value;
-    if (document.getElementById('searchBar').value.length == 0) {
-        alert("Sökfältet är tomt");
-        return;
-    } 
-        console.log("test");
+        var search = document.getElementById('searchBar').value;
+
+        if (document.getElementById('searchBar').value.length == 0) {
+            alert("Sökfältet är tomt");
+            return;
+        } 
+
+        var showTable = document.getElementById('superTable');
+        showTable.style.display = "block"; 
+       
         $.ajax({
             //traditional: true,
             type: "POST",

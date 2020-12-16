@@ -2,23 +2,39 @@
     ViewData["Title"] = "SOA";
 }
 
+<!--Sökbar-->
+<div class="text-center">
 
-    <div class="text-center">
+    <form class="searchForm" action="">
+        <input type="text"
+               placeholder="Sök schema efter kursnamn eller kurskod.."
+               name="searchBar"
+               id="searchBar" />
 
-        <form class="searchForm" action="">
-            <input 
-                   type="text" 
-                   placeholder="Sök schema efter kursnamn eller kurskod.." 
-                   name="searchBar"
-                   id="searchBar"
-             />
+        <button type="button"
+                onclick="sendValue()"
+                id="ajaxCall">
 
-            <button 
-                    type ="button"
-                    onclick="sendValue()"
-                    id="ajaxCall">
-             
-             <i class="fa fa-search"></i>  
-            </button>
-        </form>
-    </div>
+            <i class="fa fa-search"></i>
+        </button>
+    </form>
+</div>
+
+<!--Schematabell-->
+<div class="pt-4">
+    <table class="table" id="superTable" style="display:none">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Tid</th>
+                <th scope="col">Lokal/plats</th>
+                <th scope="col">Lärare, Student</th>
+                <th scope="col">Aktivitet</th>
+                <th scope="col">Kurs/Program</th>
+
+            </tr>
+        </thead>
+        <tbody id="myTable">
+        </tbody>
+    </table>
+</div>
+
