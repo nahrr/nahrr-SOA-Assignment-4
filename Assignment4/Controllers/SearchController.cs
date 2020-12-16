@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Assignment4.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -57,9 +58,13 @@ namespace Assignment4.Controllers
         //Hämtar schema via objekt-id
         public string GetScheduleByObjectId(string objectId)
         {
-            var url = "https://cloud.timeedit.net/ltu/web/schedule1/ri.html?h=t&sid=3&p=20200901.x,20300117.x&objects=insertObj&ox=0&types=0&fe=0";
+            var url = "https://cloud.timeedit.net/ltu/web/schedule1/ri.json?h=t&sid=3&p=20200901.x,20300117.x&objects=insertObj&ox=0&types=0&fe=0";
             var correctUrl = url.Replace("insertObj", objectId);
-            return correctUrl;
+
+            string json = new WebClient().DownloadString(correctUrl);
+            Root scheduleCollection = JsonConvert.DeserializeObject<Root>(json);
+            Console.WriteLine(scheduleCollection.reservations.Count); // för test, t.ex. för D0031N är det 16 lektioner (16 reservations)
+            return "";
         }
 
     }
