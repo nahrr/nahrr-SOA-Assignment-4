@@ -20,9 +20,10 @@ namespace Assignment4.Controllers
 
         public string searchUrl = "";
         public string objectId;
+        
 
-        [Route("{courseCode}")]
-        [HttpPost]
+        //[Route("{courseCode}")]
+        //[HttpPost]
         //Tar sökinput från frontend (DENNA KOD GÖR INGENTING NU, FIXA SÅ DEN NÅS FRÅN .JS-FILEN O KÖR FELHANTERING HÄR ELLER KÖR FELHANTERING HELT I .JS-FILEN)
         //public string GetSearchInput(string courseCode)
         //{
@@ -35,15 +36,18 @@ namespace Assignment4.Controllers
         //}
 
         //Bygger sök-url efter kurskod
+        [Route("{courseCode}")]
+        [HttpPost]
         public void GetSearchCourse(string courseCode)
         {
             string sourceUrl = "https://cloud.timeedit.net/ltu/web/schedule1/objects.txt?max=15&fr=t&partajax=t&im=f&sid=3&l=sv_SE&search_text=course&types=28";
             searchUrl = sourceUrl.Replace("course", courseCode);
 
             GetObjectIdByCourseCode(searchUrl);
+            //GetRecordsOfCourse(searchUrl);
         }
 
-        //Tar ut objectid för aktuell kurs från JSON-data (första träffen i records)
+        //Tar ut alla objectids för aktuell kurs från JSON-data
         private void GetObjectIdByCourseCode(string searchUrl)
         {
             var jsonData = new WebClient().DownloadString(searchUrl);
@@ -51,15 +55,28 @@ namespace Assignment4.Controllers
 
             if (((JObject)userObj).Count != 0)
             {
-                objectId = userObj.SelectToken("records[0].idAndType")
-                    .ToString(); // titta på denna.
+                objectId = userObj.SelectToken("ids")
+                .ToString(); // titta på denna.
 
-                GetScheduleByObjectId(objectId);
+                // lägger till objektidn till en string array
+                string[] objectIdArray = objectId.Split(',');
+
+                // rensar upp string arrayen, lägger till .28 och kör GetScheduleByObjectId med varje objekt-id
+                for (int i = 0; i < objectIdArray.Length; i++)
+                {
+                    objectIdArray[i] = objectIdArray[i]
+                        .Replace("[", string.Empty)
+                        .Replace("]", string.Empty)
+                        .Replace("\r\n", string.Empty)
+                        .Replace(" ", string.Empty);
+                    objectIdArray[i] += ".28";
+
+                    GetScheduleByObjectId(objectIdArray[i]);
+                }                         
             }
             else {
                 return;
             }
-
         }
 
         //Hämtar schema via objekt-id
@@ -67,12 +84,11 @@ namespace Assignment4.Controllers
         {
             var url = "https://cloud.timeedit.net/ltu/web/schedule1/ri.json?h=t&sid=3&p=20200901.x,20300117.x&objects=insertObj&ox=0&types=0&fe=0";
             var correctUrl = url.Replace("insertObj", objectId);
-
             string json = new WebClient().DownloadString(correctUrl);
+
             Root scheduleCollection = JsonConvert.DeserializeObject<Root>(json);
             Console.WriteLine(scheduleCollection.reservations.Count); // för test, t.ex. för D0031N är det 16 lektioner (16 reservations)   
         }
-
     }
 }
 
