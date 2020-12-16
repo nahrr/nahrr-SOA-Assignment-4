@@ -64,6 +64,7 @@ namespace Assignment4.Controllers
             string json = new WebClient().DownloadString(correctUrl);
             Root scheduleCollection = JsonConvert.DeserializeObject<Root>(json);
             Console.WriteLine(scheduleCollection.reservations.Count); // för test, t.ex. för D0031N är det 16 lektioner (16 reservations)
+            
             return "";
         }
 
