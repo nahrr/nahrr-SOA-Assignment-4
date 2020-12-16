@@ -7,7 +7,10 @@
 function sendValue() {
 
     var search = document.getElementById('searchBar').value;
-
+    if (document.getElementById('searchBar').value.length == 0) {
+        alert("Sökfältet är tomt");
+        return;
+    } 
         console.log("test");
         $.ajax({
             //traditional: true,

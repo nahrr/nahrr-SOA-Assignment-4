@@ -35,37 +35,42 @@ namespace Assignment4.Controllers
         //}
 
         //Bygger sök-url efter kurskod
-        public string GetSearchCourse(string courseCode)
+        public void GetSearchCourse(string courseCode)
         {
             string sourceUrl = "https://cloud.timeedit.net/ltu/web/schedule1/objects.txt?max=15&fr=t&partajax=t&im=f&sid=3&l=sv_SE&search_text=course&types=28";
             searchUrl = sourceUrl.Replace("course", courseCode);
 
-            return GetObjectIdByCourseCode(searchUrl);
+            GetObjectIdByCourseCode(searchUrl);
         }
 
         //Tar ut objectid för aktuell kurs från JSON-data (första träffen i records)
-        public string GetObjectIdByCourseCode(string searchUrl)
+        private void GetObjectIdByCourseCode(string searchUrl)
         {
             var jsonData = new WebClient().DownloadString(searchUrl);
             var userObj = JObject.Parse(jsonData);
 
-            objectId = userObj.SelectToken("records[0].idAndType")
-                .ToString();
+            if (((JObject)userObj).Count != 0)
+            {
+                objectId = userObj.SelectToken("records[0].idAndType")
+                    .ToString(); // titta på denna.
 
-            return GetScheduleByObjectId(objectId);
+                GetScheduleByObjectId(objectId);
+            }
+            else {
+                return;
+            }
+
         }
 
         //Hämtar schema via objekt-id
-        public string GetScheduleByObjectId(string objectId)
+        private void GetScheduleByObjectId(string objectId)
         {
             var url = "https://cloud.timeedit.net/ltu/web/schedule1/ri.json?h=t&sid=3&p=20200901.x,20300117.x&objects=insertObj&ox=0&types=0&fe=0";
             var correctUrl = url.Replace("insertObj", objectId);
 
             string json = new WebClient().DownloadString(correctUrl);
             Root scheduleCollection = JsonConvert.DeserializeObject<Root>(json);
-            Console.WriteLine(scheduleCollection.reservations.Count); // för test, t.ex. för D0031N är det 16 lektioner (16 reservations)
-            
-            return "";
+            Console.WriteLine(scheduleCollection.reservations.Count); // för test, t.ex. för D0031N är det 16 lektioner (16 reservations)   
         }
 
     }
