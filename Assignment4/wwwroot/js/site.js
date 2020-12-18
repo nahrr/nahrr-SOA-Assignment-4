@@ -4,6 +4,20 @@
 // Write your JavaScript code.
 
 // Skickar värdet från searchBar till controller
+
+function setDate() {
+
+    var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+    var firstDay = new Date(y, m, 1);
+    var lastDay = new Date(y, m + 1, 0);
+    
+    document.getElementById('startDate').value = firstDay;
+    document.getElementById('endDate').value = lastDay;
+
+    console.log(firstDay);
+}
+
+
 function sendValue() {
 
         var search = document.getElementById('searchBar').value;
@@ -37,6 +51,55 @@ function sendValue() {
                 alert("error " + search);
             }
         });
+
+    //function getSchedule() {
+
+
+    //    // API-anrop till "simulerat Canvas". Tar kurskod och aktuell modul och returnerar lista med studenter på aktuell modul.
+    //    $.ajax({
+    //        url: "http://localhost:51526/api/GetStudentsOnCourse/" + course + "/" + module
+    //    }).then(function (data) {
+
+    //        $('#myTable').empty();
+    //        var array = data.split(";");
+    //        var correctArray = []
+
+    //        for (var i = 0; i < array.length; i++) {
+    //            var object = array[i].split("|");
+    //            var name = object[0];
+    //            var grade = object[1];
+    //            var studentId = object[2];
+    //            var student = { "name": name, "grade": grade, "studentId": studentId }
+    //            correctArray.push(student)
+    //            console.log(correctArray)
+    //        }
+
+
+    //function buildSchedule(data) {
+    //    var table = document.getElementById('myTable')
+
+    //    for (var i = 0; i < data.length; i++) {
+    //        var row = `<tr>      
+    //                            <td> <input type="checkbox" id="selectStud${i}"> </td>
+    //                            <td><span id="studentId${i}">${data[i].studentId}</span></td>
+				//			    <td><span id="name${i}">${data[i].name}</span></td>
+				//			    <td><span id="grade${i}">${data[i].grade}</span></td>
+    //                            <td> <input type="date" id="examineDate${i}" min="2020-11-16" max="2040-12-31" required></td>
+    //                            <td>
+    //                                <select id="gradeLadok${i}">
+    //                                    <option value="U">U</option>
+    //                                    <option value="G#">G#</option>
+    //                                    <option value="G">G</option>
+    //                                    <option value="VG">VG</option>
+    //                                </select>
+    //                            </td>
+				//	        </tr>`;
+
+    //        table.innerHTML += row;
+    //    }
+    //}
+
+
 }
 
 

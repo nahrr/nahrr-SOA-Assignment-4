@@ -1,4 +1,7 @@
-﻿@{
+﻿
+@using Assignment4.Models;
+@using Assignment4.Controllers;
+@{
     ViewData["Title"] = "SOA";
 }
 
@@ -18,6 +21,18 @@
             <i class="fa fa-search"></i>
         </button>
     </form>
+</div>
+
+<div class="pt-2">
+
+    <input type="date" id="startDate"
+           value=""
+           min="2015-01-01" max="2030-12-31">
+
+    <input type="date" id="endDate"
+           value=""
+           min="2015-01-01" max="2030-12-31">
+
 </div>
 
 <!--Schematabell-->
