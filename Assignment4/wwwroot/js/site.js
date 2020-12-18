@@ -22,14 +22,15 @@ document.onreadystatechange = function setDate() {
         
         document.getElementById('startDate').value = firstDay;
         document.getElementById('endDate').value = lastDay;
-
 }
 
 
-// Skickar värdet från searchBar till controller
-function sendValue() {
+// Skickar värdet från searchBar och datum till controller
+function sendValues() {
 
         var search = document.getElementById('searchBar').value;
+        var startDate = document.getElementById('startDate').value;
+        var endDate = document.getElementById('endDate').value;
 
         if (document.getElementById('searchBar').value.length == 0) {
             alert("Sökfältet är tomt");
@@ -42,8 +43,8 @@ function sendValue() {
         $.ajax({
             //traditional: true,
             type: "POST",
-            url: "http://localhost:50261/api/search/" + search,
-            data: { searchObj: search },
+            url: "http://localhost:50261/api/search/" + search + "/" + startDate + "/" + endDate,
+            data: { searchObj: search, start: startDate, end: endDate },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
