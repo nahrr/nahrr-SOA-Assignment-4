@@ -3,21 +3,30 @@
 
 // Write your JavaScript code.
 
-// Skickar värdet från searchBar till controller
+//Sätter månadens första och sista datum i datumfälten
+document.onreadystatechange = function setDate() {
 
-function setDate() {
+        var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+            
+        var firstDay = new Date(y, m, 1)
+            .toLocaleString()
+            .split("T")[0]
+            .replace("00:00:00", "")
+            .trim();
+        
+        var lastDay = new Date(y, m + 1, 0)
+            .toLocaleString()
+            .split("T")[0]
+            .replace("00:00:00", "")
+            .trim();
+        
+        document.getElementById('startDate').value = firstDay;
+        document.getElementById('endDate').value = lastDay;
 
-    var date = new Date(), y = date.getFullYear(), m = date.getMonth();
-    var firstDay = new Date(y, m, 1);
-    var lastDay = new Date(y, m + 1, 0);
-    
-    document.getElementById('startDate').value = firstDay;
-    document.getElementById('endDate').value = lastDay;
-
-    console.log(firstDay);
 }
 
 
+// Skickar värdet från searchBar till controller
 function sendValue() {
 
         var search = document.getElementById('searchBar').value;
