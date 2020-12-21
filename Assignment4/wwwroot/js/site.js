@@ -25,8 +25,8 @@ document.onreadystatechange = function setDate() {
 }
 
 
-// Skickar värdet från searchBar och datum till controller
-function sendValues() {
+// Skickar värdet från searchBar och datum till controller och returnerar en lista på scheman
+function getValues() {
 
         var search = document.getElementById('searchBar').value;
         var startDate = document.getElementById('startDate').value;
@@ -37,19 +37,21 @@ function sendValues() {
             return;
         } 
 
-        var showTable = document.getElementById('superTable');
-        showTable.style.display = "block"; 
+        //var showTable = document.getElementById('superTable');
+        //showTable.style.display = "block"; 
        
         $.ajax({
             //traditional: true,
-            type: "POST",
-            url: "http://localhost:50261/api/search/" + search + "/" + startDate + "/" + endDate,
+            type: "GET",
+            url: "http://localhost:50261/api/search/" + search + "/" + startDate + "/" + endDate, // calla backend på annat sätt?
             data: { searchObj: search, start: startDate, end: endDate },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
+            // response = Jsondata från SearchController
             success: function (response) {
                 if (response != null) {
-                    alert("GG EZ");
+                    console.log(response);
+                    displaySchedule(response);
                 } else {
                     alert("Something went wrong");
                 }
@@ -60,54 +62,44 @@ function sendValues() {
             error: function (response) {
                 alert("error " + search);
             }
-        });
+});
 
-    //function getSchedule() {
+function displaySchedule(response) {
+    var container = document.getElementById('containerTwo');
 
+    for (var i = 0; i < response.length; i++) {
 
-    //    // API-anrop till "simulerat Canvas". Tar kurskod och aktuell modul och returnerar lista med studenter på aktuell modul.
-    //    $.ajax({
-    //        url: "http://localhost:51526/api/GetStudentsOnCourse/" + course + "/" + module
-    //    }).then(function (data) {
+        var table = `<table class="table" id="superTable${i}" style="display:block;">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Tid</th>
+                    <th scope="col">Lokal/plats</th>
+                    <th scope="col">Lärare, Student</th>
+                    <th scope="col">Aktivitet</th>
+                    <th scope="col">Kurs/Program</th>
+                </tr>
+            </thead>
+            <tbody id="scheduleTable${i}">`;
+       
+        for (var j = 0; j < response[i].reservations.length; j++) {
+            table += `<tr>
+                          <td><span id="startTimeId${i}">${response[i].reservations[j].starttime}</span></td>
+                          <td><span id="localId${i}">${response[i].reservations[j].columns[1]}</span></td>
+                          <td><span id="teacherId${i}">${response[i].reservations[j].columns[2]}</span></td>
+                          <td><span id="activityId${i}">${response[i].reservations[j].columns[3]}</span></td>
+                          <td><span id="courseNameId${i}">${response[i].reservations[j].columns[5]}</span></td> 
+                      </tr>`;
 
-    //        $('#myTable').empty();
-    //        var array = data.split(";");
-    //        var correctArray = []
+        }
 
-    //        for (var i = 0; i < array.length; i++) {
-    //            var object = array[i].split("|");
-    //            var name = object[0];
-    //            var grade = object[1];
-    //            var studentId = object[2];
-    //            var student = { "name": name, "grade": grade, "studentId": studentId }
-    //            correctArray.push(student)
-    //            console.log(correctArray)
-    //        }
+        table += `</tbody>
+            </table>`;
 
+        container.innerHTML += table;
 
-    //function buildSchedule(data) {
-    //    var table = document.getElementById('myTable')
+    }
 
-    //    for (var i = 0; i < data.length; i++) {
-    //        var row = `<tr>      
-    //                            <td> <input type="checkbox" id="selectStud${i}"> </td>
-    //                            <td><span id="studentId${i}">${data[i].studentId}</span></td>
-				//			    <td><span id="name${i}">${data[i].name}</span></td>
-				//			    <td><span id="grade${i}">${data[i].grade}</span></td>
-    //                            <td> <input type="date" id="examineDate${i}" min="2020-11-16" max="2040-12-31" required></td>
-    //                            <td>
-    //                                <select id="gradeLadok${i}">
-    //                                    <option value="U">U</option>
-    //                                    <option value="G#">G#</option>
-    //                                    <option value="G">G</option>
-    //                                    <option value="VG">VG</option>
-    //                                </select>
-    //                            </td>
-				//	        </tr>`;
-
-    //        table.innerHTML += row;
-    //    }
-    //}
+}
 
 
 }

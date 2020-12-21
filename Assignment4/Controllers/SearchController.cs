@@ -16,7 +16,7 @@ namespace Assignment4.Controllers
     [Produces("application/json")]
     [ApiController]
 
-    public class SearchController : ControllerBase
+    public class SearchController : Controller
     {
 
         public string searchUrl;
@@ -25,16 +25,18 @@ namespace Assignment4.Controllers
         public string endDate;
         public string dateString;
 
-        //Bygger sök-url efter kurskod
+        //Bygger sök-url efter kurskod och kör metoderna DateStringBuilder(), GetListOfSchedules(), returnerar jsonobjekt av schemainbokningar
         [Route("{courseCode}/{startDate}/{endDate}")]
-        [HttpPost]
-        public void GetSearchCourse(string courseCode, string startDate, string endDate)
+        [HttpGet]
+
+        public List<Root> GetSearchCourse(string courseCode, string startDate, string endDate)
         {
             string sourceUrl = "https://cloud.timeedit.net/ltu/web/schedule1/objects.txt?max=15&fr=t&partajax=t&im=f&sid=3&l=sv_SE&search_text=course&types=28";
             searchUrl = sourceUrl.Replace("course", courseCode);
 
             DateStringBuilder(startDate, endDate);
-            GetListOfSchedules(searchUrl);          
+
+            return GetListOfSchedules(searchUrl);
         }
 
         // bygger datumsträng för att skjuta in i URL.
@@ -57,7 +59,6 @@ namespace Assignment4.Controllers
         {
             var jsonData = new WebClient().DownloadString(searchUrl);
             var userObj = JObject.Parse(jsonData);
-            
             List<Root> scheduleList = new List<Root>();
 
             if (((JObject)userObj).Count != 0)
@@ -103,6 +104,7 @@ namespace Assignment4.Controllers
             // returnerar JSON-data
             string json = new WebClient().DownloadString(correctUrl);
 
+            // mappar JSON-data till klasser i Assignment4.Models 
             Root scheduleCollection = JsonConvert.DeserializeObject<Root>(json);
 
             return scheduleCollection;
