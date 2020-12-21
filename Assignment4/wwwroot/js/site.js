@@ -68,7 +68,6 @@ function displaySchedule(response) {
     var container = document.getElementById('containerTwo');
 
     for (var i = 0; i < response.length; i++) {
-
         var table = `<table class="table" id="superTable${i}" style="display:block;">
             <thead class="thead-dark">
                 <tr>

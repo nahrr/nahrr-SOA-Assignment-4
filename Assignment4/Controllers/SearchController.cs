@@ -28,7 +28,6 @@ namespace Assignment4.Controllers
         //Bygger sök-url efter kurskod och kör metoderna DateStringBuilder(), GetListOfSchedules(), returnerar jsonobjekt av schemainbokningar
         [Route("{courseCode}/{startDate}/{endDate}")]
         [HttpGet]
-
         public List<Root> GetSearchCourse(string courseCode, string startDate, string endDate)
         {
             string sourceUrl = "https://cloud.timeedit.net/ltu/web/schedule1/objects.txt?max=15&fr=t&partajax=t&im=f&sid=3&l=sv_SE&search_text=course&types=28";
