@@ -76,21 +76,21 @@ body {
 
 /* Style the search field */
 form.searchForm input[type=text] {
-    padding: 10px;
+    padding: 8px;
     font-size: 17px;
-    border: 1px solid grey;
+    border: 0.5px solid grey;
     float: left;
-    width: 40%;
+    width: 35%;
     background: #f1f1f1;
 }
 
 /* Style the submit button */
 form.searchForm button {
     float: left;
-    width: 10%;
-    padding: 10px;
-    background: #2196F3;
-    color: white;
+    width: 8%;
+    padding: 8px;
+    background: #dbdbdb;
+    color: rgb(141, 141, 141);
     font-size: 17px;
     border: 1px solid grey;
     border-left: none; /* Prevent double borders */
@@ -98,7 +98,7 @@ form.searchForm button {
 }
 
     form.searchForm button:hover {
-        background: #0b7dda;
+        background: #acf3ac;
     }
 
 

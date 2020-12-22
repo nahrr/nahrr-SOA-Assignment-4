@@ -25,7 +25,7 @@ namespace Assignment4.Controllers
         public string endDate;
         public string dateString;
 
-        //Bygger sök-url efter kurskod och kör metoderna DateStringBuilder(), GetListOfSchedules(), returnerar jsonobjekt av schemainbokningar
+        //Bygger sök-url efter kurskod och kör metoden DateStringBuilder(), returnerar lista på schemainbokningar genom GetListOfSchedules()
         [Route("{courseCode}/{startDate}/{endDate}")]
         [HttpGet]
         public List<Root> GetSearchCourse(string courseCode, string startDate, string endDate)
@@ -87,7 +87,6 @@ namespace Assignment4.Controllers
             }
 
             return scheduleList;
-
         }
 
         //Hämtar JSON-objekt för aktuellt schema via objekt-id. 
