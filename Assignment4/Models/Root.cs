@@ -11,7 +11,6 @@ namespace Assignment4.Models
         public List<string> columnheaders { get; set; }
         public Info info { get; set; }
         public List<Reservation> reservations { get; set; }
-        public CourseInfo courseinfo { get; set; } // X
-
+        public CourseInfo courseinfo { get; set; } 
     }
 }

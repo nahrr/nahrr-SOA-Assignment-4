@@ -76,8 +76,11 @@ function getValues() {
 function displaySchedule(response) {
 
     var container = document.getElementById('tableContainer');
+    var headerContainer = document.getElementById('headerContainer');
     $('#tableContainer').empty();
     for (var i = 0; i < response.length; i++) {
+        var header = `<h1 id="headerId${i}>${response[i].courseinfo.kommentar}`
+        console.log(response[i].courseinfo.kommentar);
         var table = `<table class="table table-bordered table-striped table-sm" id="superTable${i}" >
             
                 <div class="mt-5"> 
@@ -120,9 +123,10 @@ function displaySchedule(response) {
                       </tr>`;
         }
 
+        header += `</h1>`
         table += `</tbody>
             </table>`;
-           
+        headerContainer.value = header;
         container.innerHTML += table;
     }
    

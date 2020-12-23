@@ -14,5 +14,5 @@ namespace Assignment4.Models
 
         //[JsonProperty("")]
         //public string blankString { get; set; }
-}
+    }
 }

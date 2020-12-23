@@ -16,6 +16,7 @@ namespace Assignment4.Controllers
     [Produces("application/json")]
     [ApiController]
 
+    // Hanterar calls till TimeEdit och returnerar en lista innehållandes scheman och kursinformation
     public class SearchController : Controller
     {
 
@@ -62,8 +63,7 @@ namespace Assignment4.Controllers
 
             if (((JObject)userObj).Count != 0)
             {
-                objectId = userObj.SelectToken("ids")
-                .ToString(); 
+                objectId = userObj.SelectToken("ids").ToString(); 
 
                 // lägger till objektidn till en string array
                 string[] objectIdArray = objectId.Split(',');
@@ -76,14 +76,14 @@ namespace Assignment4.Controllers
                         .Replace("]", string.Empty)
                         .Replace("\r\n", string.Empty)
                         .Replace(" ", string.Empty);
-                    //objectIdArray[i] += ".28";
-
+                               
                     var root = GetScheduleByObjectId(objectIdArray[i], dateString);
 
                     // saknas aktuella bokningar läggs inte det schemat till i scheduleList.
                     if (root.reservations.Count > 0)
+                    {
                         scheduleList.Add(root);
-                    
+                    }
                 }              
             }
 
@@ -91,18 +91,14 @@ namespace Assignment4.Controllers
         }
 
 
-        // Hämta jsondata för kursinfo och använd mappa det sedan tillsammans med allt annat i Rootobjektet? Ofärdig metod
+        // Hämtar jsondata för kursinfo, mappar det sedan till Models.CourseInfo
+       private CourseInfo GetCourseInformation(string objectId)
+        {
+            var url = $"https://cloud.timeedit.net/ltu/web/schedule1/objects/{objectId}/o.json?fr=t&types=28&sid=3&l=sv_SE";
+            var courseJson = new WebClient().DownloadString(url);
 
-        //private JsonResult GetCourseInformation(string objectId)
-        //{
-        //    var url = "https://cloud.timeedit.net/ltu/web/schedule1/objects/insertObj/o.json?fr=t&types=28&sid=3&l=sv_SE";
-        //    var correctUrl = url.Replace("insertObj", objectId);
-
-        //    string courseJson = new WebClient().DownloadString(correctUrl);
-
-        //    // mappar JSON-data till klassen CourseInfo i Assignment4.Models
-        //    CourseInfo courseInformation = JsonConvert.DeserializeObject<CourseInfo>(courseJson);
-        //}
+            return JsonConvert.DeserializeObject<CourseInfo>(courseJson);
+        }
 
         //Hämtar JSON-objekt för aktuellt schema via objekt-id. 
         //Returnerar ett objekt av typen Root (ett schema).
@@ -115,12 +111,15 @@ namespace Assignment4.Controllers
 
             string jsonSched = new WebClient().DownloadString(correctUrl);
 
+            // mappar schema till Root-objektet (columnheaders, reservations, info)
             Root scheduleCollection = JsonConvert.DeserializeObject<Root>(jsonSched);
 
             if (jsonSched == null)
             {
                 errorMessage();
             }
+            // kör metoden GetCourseInformation (mappar kursinformation till courseinfo i Root-objektet)
+            scheduleCollection.courseinfo = GetCourseInformation(objectId);
 
             return scheduleCollection;
         }
