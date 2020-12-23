@@ -90,26 +90,47 @@ namespace Assignment4.Controllers
             return scheduleList;
         }
 
+        
+        // Hämta jsondata för kursinfo och använd mappa det sedan tillsammans med allt annat i Rootobjektet? Ofärdig metod
+
+        //private JsonResult GetCourseInformation(string objectId)
+        //{
+        //    var url = "https://cloud.timeedit.net/ltu/web/schedule1/objects/insertObj/o.json?fr=t&types=28&sid=3&l=sv_SE";
+        //    var correctUrl = url.Replace("insertObj", objectId);
+
+        //    string courseJson = new WebClient().DownloadString(correctUrl);
+
+        //    // mappar JSON-data till klassen CourseInfo i Assignment4.Models
+        //    CourseInfo courseInformation = JsonConvert.DeserializeObject<CourseInfo>(courseJson);
+        //}
+
         //Hämtar JSON-objekt för aktuellt schema via objekt-id. 
         //Returnerar ett objekt av typen Root (ett schema).
         private Root GetScheduleByObjectId(string objectId, string dateString)
         {
-            var url = "https://cloud.timeedit.net/ltu/web/schedule1/ri.json?h=t&sid=3&p=insertDate&objects=insertObj&ox=0&types=0&fe=0";
-
-            var correctUrl = url
+            var firstUrl = "https://cloud.timeedit.net/ltu/web/schedule1/ri.json?h=t&sid=3&p=insertDate&objects=insertObj.28&ox=0&types=0&fe=0";
+            var correctFirstUrl = firstUrl
                 .Replace("insertObj", objectId)
                 .Replace("insertDate", dateString);
-           
-            // returnerar JSON-data
-            string json = new WebClient().DownloadString(correctUrl);
-            if (json == null)
+
+            var secondUrl = "https://cloud.timeedit.net/ltu/web/schedule1/objects/insertObj/o.json?fr=t&types=28&sid=3&l=sv_SE";
+            var correctSecondUrl = secondUrl
+                .Replace("insertObj", objectId);
+
+            string jsonSched = new WebClient().DownloadString(correctFirstUrl);
+            string jsonCourse = new WebClient().DownloadString(correctSecondUrl);
+            //string test = jsonCourse;
+            //test = test.Except(string.Empty);
+            string jsonData = jsonSched + "," + "\"courseinfo\": " + jsonCourse;
+
+            Root scheduleCollection = JsonConvert.DeserializeObject<Root>(jsonData);
+
+            if (jsonData == null)
             {
                 errorMessage();
             }
 
-            // mappar JSON-data till klasser i Assignment4.Models 
-            Root scheduleCollection = JsonConvert.DeserializeObject<Root>(json);
-
+            //var test = courseInfo;
             return scheduleCollection;
         }
 
