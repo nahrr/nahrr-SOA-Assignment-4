@@ -32,8 +32,14 @@ function getValues() {
         var startDate = document.getElementById('startDate').value;
         var endDate = document.getElementById('endDate').value;
         $('#errorMessage').empty();
+        $('#tableContainer').empty();
         if (document.getElementById('searchBar').value.length == 0) {
-            alert("Sökfältet är tomt");
+            var container = document.getElementById('errorMessage');
+
+            var error = `<div class="alert alert-danger" role="alert">
+                   Sökfältet är tomt
+                </div>`;
+            container.innerHTML += error;
             return;
         } 
        
@@ -92,16 +98,23 @@ function displaySchedule(response) {
             <tbody id="scheduleTable${i}">`;
        
         for (var j = 0; j < response[i].reservations.length; j++) {
-            console.log(response[i].reservations[j].columns[5]);
+ 
+            // Tar kurskolumen och splittar den
             var courseNameArray = response[i].reservations[j].columns[5].split(",");
+            // Dynamisk lösning för att visa upp till två kursnamn
+            var secondCourseName = "";
+            if (courseNameArray.length > 1) {
+                secondCourseName = courseNameArray[1];
+            }
             
-            table += `<tr>
+            table += 
+                `<tr>
                         <td><span class="text-nowrap" id="localId${i}">${response[i].reservations[j].startdate}</span></td>
                         <td><span class="text-nowrap" id="startTimeId${i} endTimeId${i}">${response[i].reservations[j].starttime} - ${response[i].reservations[j].endtime}</span></td>    
                         <td><span class="text-nowrap" id="localId${i}">${response[i].reservations[j].columns[1]}</span></td>
                         <td><span class="text-nowrap" id="teacherId${i}">${response[i].reservations[j].columns[2]}</span></td>
                         <td><span class="text-nowrap" id="activityId${i}">${response[i].reservations[j].columns[3]}</span></td>
-                        <td><span class="text-nowrap  id="courseNameId${i}">${courseNameArray[0] + "<br>" + courseNameArray[1]}</span></td>
+                        <td><span class="text-nowrap  id=" courseNameId${i}">${courseNameArray[0] + " <br> " + secondCourseName}</span></td>
                         <td><span class="text-nowrap" id="infoId${i}">${response[i].reservations[j].columns[7]}</span></td> 
                         <td><span class="text-nowrap" id="additionalInfoId${i}">${response[i].reservations[j].columns[8]}</span></td> 
                       </tr>`;
