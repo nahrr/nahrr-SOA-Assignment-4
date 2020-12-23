@@ -31,14 +31,11 @@ function getValues() {
         var search = document.getElementById('searchBar').value;
         var startDate = document.getElementById('startDate').value;
         var endDate = document.getElementById('endDate').value;
-
+        $('#errorMessage').empty();
         if (document.getElementById('searchBar').value.length == 0) {
             alert("Sökfältet är tomt");
             return;
         } 
-
-        //var showTable = document.getElementById('superTable');
-        //showTable.style.display = "block"; 
        
         $.ajax({
             //traditional: true,
@@ -60,49 +57,63 @@ function getValues() {
                 alert("failure " + search);
             },
             error: function (response) {
-                alert("error " + search);
+                var container = document.getElementById('errorMessage');
+               
+                var error = `<div class="alert alert-danger" role="alert">
+                   Kurs ${search} hittades inte
+                </div>`;
+                container.innerHTML += error;
+               
             }
-});
+}); 
 
 function displaySchedule(response) {
 
     var container = document.getElementById('tableContainer');
-
+    $('#tableContainer').empty();
     for (var i = 0; i < response.length; i++) {
-        var table = `<table class="table table-striped table-bordered table-sm" id="superTable${i}" style="display:block;">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Datum</th>
-                    <th scope="col">Tid</th>
-                    <th scope="col">Lokal/plats</th>
-                    <th scope="col">Lärare</th>
-                    <th scope="col">Aktivitet</th>
-                    <th scope="col">Kurs/Program</th>
-                    <th scope="col">Information</th>
-                    <th scope="col">Övrigt</th>
-                </tr>
-            </thead>
+        var table = `<table class="table table-bordered table-striped table-sm" id="superTable${i}" >
+            
+                <div class="mt-5"> 
+                    <thead class="thead-dark">
+                        <tr> 
+                            <th scope="col">Datum</th>
+                            <th scope="col">Tid</th>
+                            <th scope="col">Lokal/plats</th>
+                            <th scope="col">Lärare</th>
+                            <th scope="col">Aktivitet</th>
+                            <th scope="col">Kurs/Program</th>
+                            <th scope="col">Information</th>
+                            <th scope="col">Övrigt</th>
+                        </tr>
+                    </thead>
+                </div>
+ 
             <tbody id="scheduleTable${i}">`;
        
         for (var j = 0; j < response[i].reservations.length; j++) {
+            console.log(response[i].reservations[j].columns[5]);
+            var courseNameArray = response[i].reservations[j].columns[5].split(",");
+            
             table += `<tr>
-                        <td><span id="localId${i}">${response[i].reservations[j].startdate}</span></td>
-                        <td><span id="startTimeId${i} endTimeId${i}">${response[i].reservations[j].starttime} - ${response[i].reservations[j].endtime}</span></td>    
-                        <td><span id="localId${i}">${response[i].reservations[j].columns[1]}</span></td>
-                        <td><span id="teacherId${i}">${response[i].reservations[j].columns[2]}</span></td>
-                        <td><span id="activityId${i}">${response[i].reservations[j].columns[3]}</span></td>
-                        <td><span id="courseNameId${i}">${response[i].reservations[j].columns[5]}</span></td> 
-                        <td><span id="infoId${i}">${response[i].reservations[j].columns[7]}</span></td> 
-                        <td><span id="additionalInfoId${i}">${response[i].reservations[j].columns[8]}</span></td> 
+                        <td><span class="text-nowrap" id="localId${i}">${response[i].reservations[j].startdate}</span></td>
+                        <td><span class="text-nowrap" id="startTimeId${i} endTimeId${i}">${response[i].reservations[j].starttime} - ${response[i].reservations[j].endtime}</span></td>    
+                        <td><span class="text-nowrap" id="localId${i}">${response[i].reservations[j].columns[1]}</span></td>
+                        <td><span class="text-nowrap" id="teacherId${i}">${response[i].reservations[j].columns[2]}</span></td>
+                        <td><span class="text-nowrap" id="activityId${i}">${response[i].reservations[j].columns[3]}</span></td>
+                        <td><span class="text-nowrap  id="courseNameId${i}">${courseNameArray[0] + "<br>" + courseNameArray[1]}</span></td>
+                        <td><span class="text-nowrap" id="infoId${i}">${response[i].reservations[j].columns[7]}</span></td> 
+                        <td><span class="text-nowrap" id="additionalInfoId${i}">${response[i].reservations[j].columns[8]}</span></td> 
                       </tr>`;
         }
 
         table += `</tbody>
             </table>`;
-
+           
         container.innerHTML += table;
     }
-
+   
+  
 }
 
 

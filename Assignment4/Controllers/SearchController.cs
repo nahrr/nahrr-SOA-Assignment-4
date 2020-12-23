@@ -83,6 +83,7 @@ namespace Assignment4.Controllers
                     // saknas aktuella bokningar läggs inte det schemat till i scheduleList.
                     if (root.reservations.Count > 0)
                         scheduleList.Add(root);
+                    
                 }              
             }
 
@@ -98,14 +99,23 @@ namespace Assignment4.Controllers
             var correctUrl = url
                 .Replace("insertObj", objectId)
                 .Replace("insertDate", dateString);
-
+           
             // returnerar JSON-data
             string json = new WebClient().DownloadString(correctUrl);
+            if (json == null)
+            {
+                errorMessage();
+            }
 
             // mappar JSON-data till klasser i Assignment4.Models 
             Root scheduleCollection = JsonConvert.DeserializeObject<Root>(json);
 
             return scheduleCollection;
+        }
+
+        public string errorMessage()
+        {
+            return "Kursen hittades ej";
         }
     }
 }
