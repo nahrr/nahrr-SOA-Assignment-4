@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Assignment4.Models;
@@ -9,38 +10,42 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace Assignment4.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-
     // Hanterar calls till TimeEdit och returnerar en lista innehållandes scheman och kursinformation
     public class SearchController : Controller
     {
-
-        public string searchUrl;
-        public string objectId;
-        public string startDate;
-        public string endDate;
-        public string dateString;
-
-        //Bygger sök-url efter kurskod och kör metoden DateStringBuilder(), returnerar lista på schemainbokningar genom GetListOfSchedules()
+        private string objectId;
+        private string dateString;
+        /*
+        * Bygger sök-url efter kurskod och kör metoden DateStringBuilder(), returnerar statuskod samt lista på schemainbokningar genom GetListOfSchedules(). 
+        * Är listan tom returneras statuskod 500.
+        */
         [Route("{courseCode}/{startDate}/{endDate}")]
         [HttpGet]
-        public List<Root> GetSearchCourse(string courseCode, string startDate, string endDate)
+        public IActionResult GetSearchCourse(string courseCode, string startDate, string endDate)
         {
-            string sourceUrl = "https://cloud.timeedit.net/ltu/web/schedule1/objects.txt?max=15&fr=t&partajax=t&im=f&sid=3&l=sv_SE&search_text=course&types=28";
-            searchUrl = sourceUrl.Replace("course", courseCode);
+            string searchUrl = $"https://cloud.timeedit.net/ltu/web/schedule1/objects.txt?max=15&fr=t&partajax=t&im=f&sid=3&l=sv_SE&search_text={courseCode}&types=28";
 
-            DateStringBuilder(startDate, endDate);
-
-            return GetListOfSchedules(searchUrl);
+            SetDateString(startDate, endDate);
+            var getList = GetListOfSchedules(searchUrl);
+            if (getList.Count == 0)
+            {
+                return StatusCode(500);
+            }   
+            else
+            {
+                return Ok(getList);
+            }
         }
 
-        // bygger datumsträng för att skjuta in i URL.
-        private string DateStringBuilder(string startDate, string endDate)
+        // Bygger och returnerar datumsträng för att skjuta in i URL.
+        private void SetDateString(string startDate, string endDate)
         {
             startDate = startDate.Replace("-", string.Empty);
             startDate += ".x";
@@ -49,12 +54,13 @@ namespace Assignment4.Controllers
             endDate += ".x";
 
             dateString = startDate + "," + endDate;
-
-            return dateString;
         }
 
-        //Tar ut alla objectids för sökt kurs från JSON-data från TimeEdit. 
-        //Returnerar lista med scheman som har bokningar för aktuell tidpunkt.
+        /*
+         * Tar ut alla objectids för sökt kurs från JSON-data från TimeEdit. 
+         * Returnerar lista med scheman som har bokningar för aktuell tidpunkt.
+         * Har man sökt på felaktig kurskod kommer metoden returnera en tom lista.
+        */
         private List<Root> GetListOfSchedules(string searchUrl)
         {
             var jsonData = new WebClient().DownloadString(searchUrl);
@@ -68,7 +74,7 @@ namespace Assignment4.Controllers
                 // lägger till objektidn till en string array
                 string[] objectIdArray = objectId.Split(',');
 
-                // rensar upp string arrayen, lägger till .28 och kör GetScheduleByObjectId med varje objekt-id.
+                // modifierar string arrayen och kör GetScheduleByObjectId med varje objekt-id.
                 for (int i = 0; i < objectIdArray.Length; i++)
                 {
                     objectIdArray[i] = objectIdArray[i]
@@ -77,24 +83,28 @@ namespace Assignment4.Controllers
                         .Replace("\r\n", string.Empty)
                         .Replace(" ", string.Empty);
                                
-                    var root = GetScheduleByObjectId(objectIdArray[i], dateString);
+                    var root = GetScheduleByObjectId(objectIdArray[i]);
 
-                    // saknas aktuella bokningar läggs inte det schemat till i scheduleList.
-                    if (root.reservations.Count > 0)
+                    // kollar om root-objektets properties är null
+                    bool isNull = root.GetType().GetProperties()
+                                  .All(p => p.GetValue(root) == null);
+
+                    // körs om root-objektets properties ej är null, saknas aktuella bokningar läggs inte det schemat till i scheduleList.
+                    if (!isNull) 
                     {
-                        scheduleList.Add(root);
+                    scheduleList.Add(root);
                     }
+                    
                 }              
             }
 
-            return scheduleList;
+            return scheduleList;           
         }
 
-
-        // Hämtar jsondata för kursinfo, mappar det sedan till Models.CourseInfo
-       private CourseInfo GetCourseInformation(string objectId)
+       // Hämtar jsondata för kursinfo, mappar det sedan till Models.CourseInfo
+       private CourseInfo GetCourseInformation(string courseId)
         {
-            var url = $"https://cloud.timeedit.net/ltu/web/schedule1/objects/{objectId}/o.json?fr=t&types=28&sid=3&l=sv_SE";
+            var url = $"https://cloud.timeedit.net/ltu/web/schedule1/objects/{courseId}/o.json?fr=t&types=28&sid=3&l=sv_SE";
             var courseJson = new WebClient().DownloadString(url);
 
             return JsonConvert.DeserializeObject<CourseInfo>(courseJson);
@@ -102,31 +112,26 @@ namespace Assignment4.Controllers
 
         //Hämtar JSON-objekt för aktuellt schema via objekt-id. 
         //Returnerar ett objekt av typen Root (ett schema).
-        private Root GetScheduleByObjectId(string objectId, string dateString)
-        {
-            var url = "https://cloud.timeedit.net/ltu/web/schedule1/ri.json?h=t&sid=3&p=insertDate&objects=insertObj.28&ox=0&types=0&fe=0";
-            var correctUrl = url
-                .Replace("insertObj", objectId)
-                .Replace("insertDate", dateString);
-
-            string jsonSched = new WebClient().DownloadString(correctUrl);
-
+        private Root GetScheduleByObjectId(string courseId)
+        {     
+            var url = $"https://cloud.timeedit.net/ltu/web/schedule1/ri.json?h=t&sid=3&p={dateString}&objects={courseId}.28&ox=0&types=0&fe=0";
+            string jsonSched;
+            try
+            {
+                jsonSched = new WebClient().DownloadString(url);
+            }
+            catch (WebException e)
+            {
+                Console.WriteLine("Fel: {0}", e);
+                return new Root();
+            }    
             // mappar schema till Root-objektet (columnheaders, reservations, info)
             Root scheduleCollection = JsonConvert.DeserializeObject<Root>(jsonSched);
 
-            if (jsonSched == null)
-            {
-                errorMessage();
-            }
             // kör metoden GetCourseInformation (mappar kursinformation till courseinfo i Root-objektet)
-            scheduleCollection.courseinfo = GetCourseInformation(objectId);
+            scheduleCollection.courseinfo = GetCourseInformation(courseId);
 
-            return scheduleCollection;
-        }
-
-        public string errorMessage()
-        {
-            return "Kursen hittades ej";
+            return scheduleCollection;    
         }
     }
 }

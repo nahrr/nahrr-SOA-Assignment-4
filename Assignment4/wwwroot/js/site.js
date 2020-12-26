@@ -1,91 +1,82 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-
-//Sätter månadens första och sista datum i datumfälten
+﻿//Sätter månadens första och sista datum i datumfälten
 document.onreadystatechange = function setDate() {
 
-        var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+    var date = new Date(), y = date.getFullYear(), m = date.getMonth();
             
-        var firstDay = new Date(y, m, 1)
-            .toLocaleString()
-            .split("T")[0]
-            .replace("00:00:00", "")
-            .trim();
+    var firstDay = new Date(y, m, 1)
+        .toLocaleString()
+        .split("T")[0]
+        .replace("00:00:00", "")
+        .trim();
         
-        var lastDay = new Date(y, m + 1, 0)
-            .toLocaleString()
-            .split("T")[0]
-            .replace("00:00:00", "")
-            .trim();
+    var lastDay = new Date(y, m + 1, 0)
+        .toLocaleString()
+        .split("T")[0]
+        .replace("00:00:00", "")
+        .trim();
         
-        document.getElementById('startDate').value = firstDay;
-        document.getElementById('endDate').value = lastDay;
+    document.getElementById('startDate').value = firstDay;
+    document.getElementById('endDate').value = lastDay;
 }
-
 
 // Skickar värdet från searchBar och datum till controller och returnerar en lista på scheman
 function getValues() {
 
-        var search = document.getElementById('searchBar').value;
-        var startDate = document.getElementById('startDate').value;
-        var endDate = document.getElementById('endDate').value;
-        $('#errorMessage').empty();
-        $('#tableContainer').empty();
-        if (document.getElementById('searchBar').value.length == 0) {
+    var search = document.getElementById('searchBar').value;
+    var startDate = document.getElementById('startDate').value;
+    var endDate = document.getElementById('endDate').value;
+
+    $('#errorMessage').empty();
+    $('#tableContainer').empty();
+
+    if (document.getElementById('searchBar').value.length == 0) {
+        var container = document.getElementById('errorMessage');
+
+        var error = `<div class="alert alert-danger" role="alert">Sökfältet är tomt</div>`;
+        container.innerHTML += error;
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:50261/api/search/" + search + "/" + startDate + "/" + endDate, // calla backend på annat sätt?
+        data: { searchObj: search, start: startDate, end: endDate },
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+
+        success: function (response) {
+            displaySchedule(response);
+        },
+        failure: function (response) {
+            alert("failure " + search);
+        },
+        error: function (response) {
             var container = document.getElementById('errorMessage');
 
-            var error = `<div class="alert alert-danger" role="alert">
-                   Sökfältet är tomt
-                </div>`;
+            var error = `<div class="alert alert-danger" role="alert">Inget resultat hittades för <i>${search}</i>. Kontrollera att din sökning är korrekt.</div>`;
             container.innerHTML += error;
-            return;
-        } 
-       
-        $.ajax({
-            //traditional: true,
-            type: "GET",
-            url: "http://localhost:50261/api/search/" + search + "/" + startDate + "/" + endDate, // calla backend på annat sätt?
-            data: { searchObj: search, start: startDate, end: endDate },
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            // response = Lista från SearchController
-            success: function (response) {
-                if (response != null) {
-                    console.log(response);
-                    displaySchedule(response);
-                } else {
-                    alert("Something went wrong");
-                }
-            },
-            failure: function (response) {
-                alert("failure " + search);
-            },
-            error: function (response) {
-                var container = document.getElementById('errorMessage');
-               
-                var error = `<div class="alert alert-danger" role="alert">
-                   Kurs ${search} hittades inte
-                </div>`;
-                container.innerHTML += error;
-               
-            }
-}); 
+        }
+    });
+}
 
-function displaySchedule(response) {
+function displaySchedule(courseList) {
 
-    var container = document.getElementById('tableContainer');
+
+    var startDate = document.getElementById('startDate').value;
+    var endDate = document.getElementById('endDate').value;
+    var scheduleContainer = document.getElementById('tableContainer');
 
     $('#tableContainer').empty();
-    for (var i = 0; i < response.length; i++) {
 
-        var table = `<table class="table table-bordered table-striped table-sm" id="superTable${i}" >
+    for (var i = 0; i < courseList.length; i++) {
+
+        if (courseList[i].reservations.length > 0) {
+            var table = `<table class="table table-bordered table-striped table-sm" id="superTable${i}" >
             
                 <div class="mt-5"> 
                     <thead class="thead-dark">
                         <tr>
-                            <th colspan="100%">${response[i].courseinfo.kurskod}, ${response[i].courseinfo.namn}, ${response[i].courseinfo.kommentar}</th> 
+                            <th colspan="100%">${courseList[i].courseinfo.kurskod}, ${courseList[i].courseinfo.namn}, ${courseList[i].courseinfo.kommentar}</th> 
                         </tr>
                         <tr> 
                             <th scope="col">Datum</th>
@@ -101,40 +92,47 @@ function displaySchedule(response) {
                 </div>
  
             <tbody id="scheduleTable${i}">`;
-       
-        for (var j = 0; j < response[i].reservations.length; j++) {
- 
-            // Tar kurskolumen och splittar den
-            var courseNameArray = response[i].reservations[j].columns[5].split(",");
-            // Dynamisk lösning för att visa upp till två kursnamn
-            var secondCourseName = "";
-            if (courseNameArray.length > 1) {
-                secondCourseName = courseNameArray[1];
+
+            for (var j = 0; j < courseList[i].reservations.length; j++) {
+
+                // Tar kurskolumen och splittar den
+                var courseNameArray = courseList[i].reservations[j].columns[5].split(",");
+                // Dynamisk lösning för att visa upp till två kursnamn
+                var secondCourseName = "";
+                if (courseNameArray.length > 1) {
+                    secondCourseName = courseNameArray[1];
+                }
+
+                table += `<tr>
+                            <td><span class="text-nowrap" id="localId${i}">${courseList[i].reservations[j].startdate}</span></td>
+                            <td><span class="text-nowrap" id="startTimeId${i} endTimeId${i}">${courseList[i].reservations[j].starttime} - ${courseList[i].reservations[j].endtime}</span></td>    
+                            <td><span class="text-nowrap" id="localId${i}">${courseList[i].reservations[j].columns[1]}</span></td>
+                            <td><span class="text-nowrap" id="teacherId${i}">${courseList[i].reservations[j].columns[2]}</span></td>
+                            <td><span class="text-nowrap" id="activityId${i}">${courseList[i].reservations[j].columns[3]}</span></td>
+                            <td><span class="text-nowrap  id="courseNameId${i}">${courseNameArray[0] + " <br> " + secondCourseName}</span></td>
+                            <td><span class="text-nowrap" id="infoId${i}">${courseList[i].reservations[j].columns[7]}</span></td> 
+                            <td><span class="text-nowrap" id="additionalInfoId${i}">${courseList[i].reservations[j].columns[8]}</span></td> 
+                        </tr>`;
             }
-            
-            table += 
-                `<tr>
-                        <td><span class="text-nowrap" id="localId${i}">${response[i].reservations[j].startdate}</span></td>
-                        <td><span class="text-nowrap" id="startTimeId${i} endTimeId${i}">${response[i].reservations[j].starttime} - ${response[i].reservations[j].endtime}</span></td>    
-                        <td><span class="text-nowrap" id="localId${i}">${response[i].reservations[j].columns[1]}</span></td>
-                        <td><span class="text-nowrap" id="teacherId${i}">${response[i].reservations[j].columns[2]}</span></td>
-                        <td><span class="text-nowrap" id="activityId${i}">${response[i].reservations[j].columns[3]}</span></td>
-                        <td><span class="text-nowrap  id=" courseNameId${i}">${courseNameArray[0] + " <br> " + secondCourseName}</span></td>
-                        <td><span class="text-nowrap" id="infoId${i}">${response[i].reservations[j].columns[7]}</span></td> 
-                        <td><span class="text-nowrap" id="additionalInfoId${i}">${response[i].reservations[j].columns[8]}</span></td> 
-                      </tr>`;
+
+            table += `</tbody></table>`;
+
+            scheduleContainer.innerHTML += table;
         }
+        else {
+            var errorMsgContainer = document.getElementById('errorMessage');
 
-        table += `</tbody>
-            </table>`;
-        container.innerHTML += table;
+            var error = `<div class="alert alert-danger" role="alert">
+                            Inga inbokningar för ${courseList[i].courseinfo.kurskod}, ${courseList[i].courseinfo.namn}, ${courseList[i].courseinfo.kommentar} mellan ${startDate} och ${endDate}.
+                        </div>`;
+
+            errorMsgContainer.innerHTML += error;
+        }
     }
-   
-  
 }
 
 
-}
+
 
 
 
