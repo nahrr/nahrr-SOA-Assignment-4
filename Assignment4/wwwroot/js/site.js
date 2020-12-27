@@ -128,7 +128,7 @@ function displaySchedule(courseList) {
             errorMsgContainer.innerHTML += error;
         }
 
-        //Döljer tableHeader och tbody, test att göra med variable
+        //Döljer tableHeader och tbody, testade att göra med variable
         var tableHeaderId = "#tableHeader" + i;
         $(tableHeaderId).hide();
 

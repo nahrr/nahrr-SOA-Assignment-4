@@ -34,6 +34,7 @@ namespace Assignment4.Controllers
 
             SetDateString(startDate, endDate);
             var getList = GetListOfSchedules(searchUrl);
+
             if (getList.Count == 0)
             {
                 return StatusCode(500);
