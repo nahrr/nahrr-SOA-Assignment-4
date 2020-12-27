@@ -46,6 +46,7 @@ function getValues() {
 
         success: function (response) {
             displaySchedule(response);
+            displayModal(response);
         },
         failure: function (response) {
             alert("failure " + search);
@@ -78,6 +79,7 @@ function displaySchedule(courseList) {
                             <th colspan="100%"> <i class="fa fa-window-maximize"></i> ${courseList[i].courseinfo.kurskod}, ${courseList[i].courseinfo.namn}, ${courseList[i].courseinfo.kommentar}</th> 
                         </tr>
                         <tr id="tableHeader${i}"> 
+                            <th scope="col"></th>
                             <th scope="col">Datum</th>
                             <th scope="col">Tid</th>
                             <th scope="col">Lokal/plats</th>
@@ -102,7 +104,12 @@ function displaySchedule(courseList) {
                     secondCourseName = courseNameArray[1];
                 }
 
+                
+                    
+
+
                 table += `<tr>
+                            <td><button type="button" id="buttonId${i}" class="btn btn-dark btn-sm" data-toggle="modal" data-target="#exampleModalCenter">Redigera</button></td>
                             <td><span class="text-nowrap" id="localId${i}">${courseList[i].reservations[j].startdate}</span></td>
                             <td><span class="text-nowrap" id="startTimeId${i} endTimeId${i}">${courseList[i].reservations[j].starttime} - ${courseList[i].reservations[j].endtime}</span></td>    
                             <td><span class="text-nowrap" id="localId${i}">${courseList[i].reservations[j].columns[1]}</span></td>
@@ -111,11 +118,9 @@ function displaySchedule(courseList) {
                             <td><span class="text-nowrap  id="courseNameId${i}">${courseNameArray[0] + " <br> " + secondCourseName}</span></td>
                             <td><span class="text-nowrap" id="infoId${i}">${courseList[i].reservations[j].columns[7]}</span></td> 
                             <td><span class="text-nowrap" id="additionalInfoId${i}">${courseList[i].reservations[j].columns[8]}</span></td> 
-                        </tr>`;
+                        </tr>`; 
             }
-
             table += `</tbody></table>`;
-
             scheduleContainer.innerHTML += table;
         }
         else {
@@ -127,6 +132,8 @@ function displaySchedule(courseList) {
 
             errorMsgContainer.innerHTML += error;
         }
+
+ 
 
         //Döljer tableHeader och tbody, testade att göra med variable
         var tableHeaderId = "#tableHeader" + i;
@@ -151,6 +158,46 @@ function visibilityForListAndHeaders(i) {
     }
 
 }
+//Utkast på metod för en popup när man trycker på redigera
+function displayModal() {
+
+    var modalContainer = document.getElementById('modalContainer');
+
+        var modal = `<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Redigera schema i Canvas</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Titel" aria-label="Titel">
+                            </div>
+                                 <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Starttid" aria-label="Starttid">
+                                 </div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Sluttid" aria-label="Sluttid">
+                                     </div>
+                                         <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Kommentar" aria-label="Kommentar">
+                                        </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Stäng</button>
+                            <button type="button" class="btn btn-primary">Spara till Canvas</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>`;
+
+        modalContainer.innerHTML += modal;
+}
+
+
 
 
 
