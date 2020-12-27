@@ -60,8 +60,7 @@ function getValues() {
 }
 
 function displaySchedule(courseList) {
-
-
+   
     var startDate = document.getElementById('startDate').value;
     var endDate = document.getElementById('endDate').value;
     var scheduleContainer = document.getElementById('tableContainer');
@@ -69,16 +68,16 @@ function displaySchedule(courseList) {
     $('#tableContainer').empty();
 
     for (var i = 0; i < courseList.length; i++) {
-
+        
         if (courseList[i].reservations.length > 0) {
             var table = `<table class="table table-bordered table-striped table-sm" id="superTable${i}" >
             
                 <div class="mt-5"> 
                     <thead class="thead-dark">
-                        <tr>
-                            <th colspan="100%">${courseList[i].courseinfo.kurskod}, ${courseList[i].courseinfo.namn}, ${courseList[i].courseinfo.kommentar}</th> 
+                        <tr class="cursor-pointer" onclick="visabiltyForListAndHeaders(${i})" id="superHeader${i}">
+                            <th colspan="100%"> <i class="fa fa-window-maximize"></i> ${courseList[i].courseinfo.kurskod}, ${courseList[i].courseinfo.namn}, ${courseList[i].courseinfo.kommentar}</th> 
                         </tr>
-                        <tr> 
+                        <tr id="tableHeader${i}"> 
                             <th scope="col">Datum</th>
                             <th scope="col">Tid</th>
                             <th scope="col">Lokal/plats</th>
@@ -128,7 +127,29 @@ function displaySchedule(courseList) {
 
             errorMsgContainer.innerHTML += error;
         }
+
+        //Döljer tableHeader och tbody, testade att göra med variable, troligtvis retard
+        var tableHeaderId = "#tableHeader" + i;
+        $(tableHeaderId).hide();
+
+        var tBodyIdy= "#scheduleTable" + i;
+        $(tBodyIdy).hide();
+  
     }
+}
+
+function visabiltyForListAndHeaders(i) {
+
+    if ($("#scheduleTable" + i).is(":visible")) {
+        $("#scheduleTable" + i).hide();
+        $("#tableHeader" + i).hide();
+    }
+    else if
+        ($("#scheduleTable" + i).is(":hidden")) {
+        $("#scheduleTable" + i).show();
+        $("#tableHeader" + i).show();
+    }
+
 }
 
 

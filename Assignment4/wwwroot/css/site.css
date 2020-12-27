@@ -83,3 +83,7 @@ form.searchForm::after {
     display: table;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
