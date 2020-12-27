@@ -74,7 +74,7 @@ function displaySchedule(courseList) {
             
                 <div class="mt-5"> 
                     <thead class="thead-dark">
-                        <tr class="cursor-pointer" onclick="visabiltyForListAndHeaders(${i})" id="superHeader${i}">
+                        <tr class="cursor-pointer" onclick="visibilityForListAndHeaders(${i})" id="superHeader${i}">
                             <th colspan="100%"> <i class="fa fa-window-maximize"></i> ${courseList[i].courseinfo.kurskod}, ${courseList[i].courseinfo.namn}, ${courseList[i].courseinfo.kommentar}</th> 
                         </tr>
                         <tr id="tableHeader${i}"> 
@@ -128,7 +128,7 @@ function displaySchedule(courseList) {
             errorMsgContainer.innerHTML += error;
         }
 
-        //Döljer tableHeader och tbody, testade att göra med variable, troligtvis retard
+        //Döljer tableHeader och tbody, test att göra med variable
         var tableHeaderId = "#tableHeader" + i;
         $(tableHeaderId).hide();
 
@@ -138,7 +138,7 @@ function displaySchedule(courseList) {
     }
 }
 
-function visabiltyForListAndHeaders(i) {
+function visibilityForListAndHeaders(i) {
 
     if ($("#scheduleTable" + i).is(":visible")) {
         $("#scheduleTable" + i).hide();

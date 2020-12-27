@@ -116,6 +116,7 @@ namespace Assignment4.Controllers
         {     
             var url = $"https://cloud.timeedit.net/ltu/web/schedule1/ri.json?h=t&sid=3&p={dateString}&objects={courseId}.28&ox=0&types=0&fe=0";
             string jsonSched;
+
             try
             {
                 jsonSched = new WebClient().DownloadString(url);
