@@ -70,7 +70,7 @@ function displaySchedule(courseList) {
     for (var i = 0; i < courseList.length; i++) {
         
         if (courseList[i].reservations.length > 0) {
-            var table = `<table class="table table-bordered table-striped table-sm" id="superTable${i}" >
+            var table = `<table class="table table-bordered table-striped table-sm" id="superTable${i}">
             
                 <div class="mt-5"> 
                     <thead class="thead-dark">
