@@ -177,7 +177,7 @@ function displayModal(clickedId) {
 
                                     <div class="form-group">
                                         <label for="titel">Titel</label>
-                                        <input type="text" class="form-control" id="inputCourseNameId" placeholder="Titel" name="titel">
+                                        <input type="text" class="form-control" id="inputTitleId" placeholder="Titel" name="titel">
                                     </div>
 
                                     <div class="form-group">
@@ -203,7 +203,7 @@ function displayModal(clickedId) {
 
                           <div class="modal-footer">
                             <button type="reset" class="btn btn-secondary"  data-dismiss="modal">Stäng</button>
-                            <button type="button" class="btn btn-primary">Spara till Canvas</button>
+                            <button type="button" onClick="postToCanvas()" class="btn btn-primary" data-dismiss="modal">Spara till Canvas</button>
                           </div>
                         </div>
                       </div>
@@ -213,7 +213,29 @@ function displayModal(clickedId) {
     document.getElementById("inputStartTimeId").defaultValue = startTime;
     document.getElementById("inputEndTimeId").defaultValue = endTime;
     document.getElementById("inputDateTimeId").defaultValue = inputDateTime;
- }
+
+}
+
+function postToCanvas() {
+
+   const title = document.getElementById("inputTitleId").value;
+   const date = document.getElementById("inputDateTimeId").value;
+   const startTime = document.getElementById("inputStartTimeId").value;
+   const endTime = document.getElementById("inputEndTimeId").value;
+   const comment = document.getElementById("inputCommentId").value;
+
+      $.ajax({
+          url: "http://localhost:50261/api/posttocanvas/" + title + "/" + date + "/" + startTime + "/" + endTime + "/" + comment
+      }).then(function (data) {
+
+       // Vi kanske borde göra om errorMessage till allmän userfeedback?
+        var container = document.getElementById('errorMessage');
+
+        var error = `<div class="alert alert-success" role="alert">Passet är nu sparat i Canvas</div>`;
+        container.innerHTML += error;
+
+    });
+}
   
 
 
