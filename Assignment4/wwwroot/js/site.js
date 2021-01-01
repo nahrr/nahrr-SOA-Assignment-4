@@ -46,7 +46,6 @@ function getValues() {
 
         success: function (response) {
             displaySchedule(response);
-            displayModal(response);
         },
         failure: function (response) {
             alert("failure " + search);
@@ -104,22 +103,19 @@ function displaySchedule(courseList) {
                     secondCourseName = courseNameArray[1];
                 }
 
-                
-                    
-
-
                 table += `<tr>
-                            <td><button type="button" id="buttonId${i}" class="btn btn-dark btn-sm" data-toggle="modal" data-target="#exampleModalCenter">Redigera</button></td>
-                            <td><span class="text-nowrap" id="localId${i}">${courseList[i].reservations[j].startdate}</span></td>
-                            <td><span class="text-nowrap" id="startTimeId${i} endTimeId${i}">${courseList[i].reservations[j].starttime} - ${courseList[i].reservations[j].endtime}</span></td>    
-                            <td><span class="text-nowrap" id="localId${i}">${courseList[i].reservations[j].columns[1]}</span></td>
-                            <td><span class="text-nowrap" id="teacherId${i}">${courseList[i].reservations[j].columns[2]}</span></td>
-                            <td><span class="text-nowrap" id="activityId${i}">${courseList[i].reservations[j].columns[3]}</span></td>
-                            <td><span class="text-nowrap  id="courseNameId${i}">${courseNameArray[0] + " <br> " + secondCourseName}</span></td>
-                            <td><span class="text-nowrap" id="infoId${i}">${courseList[i].reservations[j].columns[7]}</span></td> 
-                            <td><span class="text-nowrap" id="additionalInfoId${i}">${courseList[i].reservations[j].columns[8]}</span></td> 
+                            <td><button type="button" id="buttonId${j}" onClick="displayModal(this.id)" class="btn btn-dark btn-sm" data-toggle="modal" data-target="#exampleModalCenter">Redigera</button></td>
+                            <td><span class="text-nowrap" id="dateId${j}">${courseList[i].reservations[j].startdate}</span></td>
+                            <td><span class="text-nowrap" id="startTimeId${j} endTimeId${j}">${courseList[i].reservations[j].starttime} - ${courseList[i].reservations[j].endtime}</span></td>    
+                            <td><span class="text-nowrap" id="localId${j}">${courseList[i].reservations[j].columns[1]}</span></td>
+                            <td><span class="text-nowrap" id="teacherId${j}">${courseList[i].reservations[j].columns[2]}</span></td>
+                            <td><span class="text-nowrap" id="activityId${j}">${courseList[i].reservations[j].columns[3]}</span></td>
+                            <td><span class="text-nowrap  id="courseNameId${j}">${courseNameArray[0] + " <br> " + secondCourseName}</span></td>
+                            <td><span class="text-nowrap" id="infoId${j}">${courseList[i].reservations[j].columns[7]}</span></td> 
+                            <td><span class="text-nowrap" id="additionalInfoId${j}">${courseList[i].reservations[j].columns[8]}</span></td> 
                         </tr>`; 
             }
+            
             table += `</tbody></table>`;
             scheduleContainer.innerHTML += table;
         }
@@ -132,8 +128,6 @@ function displaySchedule(courseList) {
 
             errorMsgContainer.innerHTML += error;
         }
-
- 
 
         //Döljer tableHeader och tbody, testade att göra med variable
         var tableHeaderId = "#tableHeader" + i;
@@ -159,11 +153,18 @@ function visibilityForListAndHeaders(i) {
 
 }
 //Utkast på metod för en popup när man trycker på redigera
-function displayModal() {
+function displayModal(clickedId) {
+    //Ta ut unika Id:et
+    var getId = clickedId.split('d').pop();
+   //Splitta start- och sluttid
+    inputTime = document.getElementById("startTimeId" + getId + " " + "endTimeId" + getId).innerText;
+    var timeArray = inputTime.split("-");
+    var startTime = timeArray[0].trim();
+    var endTime = timeArray[1].trim();
 
-    var modalContainer = document.getElementById('modalContainer');
-
-        var modal = `<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    var inputDateTime = document.getElementById("dateId" + getId).innerText;
+   
+    var modal = `<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                       <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -172,31 +173,48 @@ function displayModal() {
                               <span aria-hidden="true">&times;</span>
                             </button>
                           </div>
-                          <div class="modal-body">
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Titel" aria-label="Titel">
-                            </div>
-                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Starttid" aria-label="Starttid">
-                                 </div>
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" placeholder="Sluttid" aria-label="Sluttid">
+                          <div class="modal-body" id=modalBody>
+
+                                    <div class="form-group">
+                                        <label for="titel">Titel</label>
+                                        <input type="text" class="form-control" id="inputCourseNameId" placeholder="Titel" name="titel">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="date">Datum</label>
+                                        <input type="date" class="form-control" id="inputDateTimeId" placeholder="Datum" name="date">
                                      </div>
-                                         <div class="input-group mb-3">
-                                            <input type="text" class="form-control" placeholder="Kommentar" aria-label="Kommentar">
-                                        </div>
-                          </div>
+
+                                     <div class="form-group">
+                                        <label for="startTime">Starttid</label>
+                                        <input type="time" class="form-control" id="inputStartTimeId" placeholder="Starttid" name="startTime">
+                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="endTime">Sluttid</label>
+                                        <input type="time" class="form-control" id="inputEndTimeId" placeholder="Sluttid" name="endTime">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="comment">Kommentar</label>
+                                        <input type="text" class="form-control" id="inputCommentId" placeholder="Kommentar" name="comment">
+                                    </div>
+                            </div>
+
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Stäng</button>
+                            <button type="reset" class="btn btn-secondary"  data-dismiss="modal">Stäng</button>
                             <button type="button" class="btn btn-primary">Spara till Canvas</button>
                           </div>
                         </div>
                       </div>
                     </div>`;
 
-        modalContainer.innerHTML += modal;
-}
-
+    modalContainer.innerHTML += modal;
+    document.getElementById("inputStartTimeId").defaultValue = startTime;
+    document.getElementById("inputEndTimeId").defaultValue = endTime;
+    document.getElementById("inputDateTimeId").defaultValue = inputDateTime;
+ }
+  
 
 
 
