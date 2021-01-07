@@ -102,9 +102,9 @@ function displaySchedule(courseList) {
                 if (courseNameArray.length > 1) {
                     secondCourseName = courseNameArray[1];
                 }
-
-                table += `<tr>
-                            <td><button type="button" id="buttonId${j}" onClick="displayModal(this.id)" class="btn btn-dark btn-sm" data-toggle="modal" data-target="#exampleModalCenter">Redigera</button></td>
+            
+                table += `<tr name="rows" id="tableRow${j}">
+                            <td><button type="button" id="buttonId${j}" onClick="displayModal(this.id);markTableRow(this.id)" class="btn btn-dark btn-sm" data-toggle="modal" data-target="#exampleModalCenter">Redigera</button></td>
                             <td><span class="text-nowrap" id="dateId${j}">${courseList[i].reservations[j].startdate}</span></td>
                             <td><span class="text-nowrap" id="startTimeId${j} endTimeId${j}">${courseList[i].reservations[j].starttime} - ${courseList[i].reservations[j].endtime}</span></td>    
                             <td><span class="text-nowrap" id="localId${j}">${courseList[i].reservations[j].columns[1]}</span></td>
@@ -128,7 +128,7 @@ function displaySchedule(courseList) {
 
             errorMsgContainer.innerHTML += error;
         }
-
+       
         //Döljer tableHeader och tbody, testade att göra med variable
         var tableHeaderId = "#tableHeader" + i;
         $(tableHeaderId).hide();
@@ -152,7 +152,25 @@ function visibilityForListAndHeaders(i) {
     }
 
 }
-//Utkast på metod för en popup när man trycker på redigera
+
+function markTableRow(clickedId) {
+
+    var getUniqueId = clickedId.split('d').pop();
+    var tableRowId = "tableRow" + getUniqueId;
+    document.getElementById(tableRowId).classList.add("table-info");
+}
+
+function removeTableMark() {
+
+    var allTr = document.querySelectorAll("tr");
+
+    for (var i = 0; i < allTr.length; i++) {
+        allTr[i].classList.remove("table-info")
+    }
+
+}
+ 
+
 function displayModal(clickedId) {
     //Ta ut unika Id:et
     var getId = clickedId.split('d').pop();
@@ -169,7 +187,7 @@ function displayModal(clickedId) {
                         <div class="modal-content">
                           <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLongTitle">Redigera schema i Canvas</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" onClick="removeTableMark()" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
                           </div>
@@ -202,7 +220,7 @@ function displayModal(clickedId) {
                             </div>
 
                           <div class="modal-footer">
-                            <button type="reset" class="btn btn-secondary"  data-dismiss="modal">Stäng</button>
+                            <button type="reset" class="btn btn-secondary" onClick="removeTableMark()" data-dismiss="modal">Stäng</button>
                             <button type="button" onClick="postToCanvas()" class="btn btn-primary" data-dismiss="modal">Spara till Canvas</button>
                           </div>
                         </div>
