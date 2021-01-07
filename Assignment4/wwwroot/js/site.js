@@ -103,16 +103,16 @@ function displaySchedule(courseList) {
                     secondCourseName = courseNameArray[1];
                 }
             
-                table += `<tr name="rows" id="tableRow${j}">
-                            <td><button type="button" id="buttonId${j}" onClick="displayModal(this.id);markTableRow(this.id)" class="btn btn-dark btn-sm" data-toggle="modal" data-target="#exampleModalCenter">Redigera</button></td>
-                            <td><span class="text-nowrap" id="dateId${j}">${courseList[i].reservations[j].startdate}</span></td>
-                            <td><span class="text-nowrap" id="startTimeId${j} endTimeId${j}">${courseList[i].reservations[j].starttime} - ${courseList[i].reservations[j].endtime}</span></td>    
-                            <td><span class="text-nowrap" id="localId${j}">${courseList[i].reservations[j].columns[1]}</span></td>
-                            <td><span class="text-nowrap" id="teacherId${j}">${courseList[i].reservations[j].columns[2]}</span></td>
-                            <td><span class="text-nowrap" id="activityId${j}">${courseList[i].reservations[j].columns[3]}</span></td>
-                            <td><span class="text-nowrap  id="courseNameId${j}">${courseNameArray[0] + " <br> " + secondCourseName}</span></td>
-                            <td><span class="text-nowrap" id="infoId${j}">${courseList[i].reservations[j].columns[7]}</span></td> 
-                            <td><span class="text-nowrap" id="additionalInfoId${j}">${courseList[i].reservations[j].columns[8]}</span></td> 
+                table += `<tr name="rows" id="tableRowId${i}${j}">
+                            <td><button type="button" id="buttonId${i}${j}" onClick="displayModal(this.id);markTableRow(this.id)" class="btn btn-dark btn-sm show-modal" data-toggle="modal" data-target="#exampleModalCenter">Redigera</button></td>
+                            <td><span class="text-nowrap" id="dateId${i}${j}">${courseList[i].reservations[j].startdate}</span></td>
+                            <td><span class="text-nowrap" id="startTimeId${i}${j} endTimeId${i}${j}">${courseList[i].reservations[j].starttime} - ${courseList[i].reservations[j].endtime}</span></td>    
+                            <td><span class="text-nowrap" id="localId${i}${j}">${courseList[i].reservations[j].columns[1]}</span></td>
+                            <td><span class="text-nowrap" id="teacherId${i}${j}">${courseList[i].reservations[j].columns[2]}</span></td>
+                            <td><span class="text-nowrap" id="activityId${i}${j}">${courseList[i].reservations[j].columns[3]}</span></td>
+                            <td><span class="text-nowrap  id="courseNameId${i}${j}">${courseNameArray[0] + " <br> " + secondCourseName}</span></td>
+                            <td><span class="text-nowrap" id="infoId${i}${j}">${courseList[i].reservations[j].columns[7]}</span></td> 
+                            <td><span class="text-nowrap" id="additionalInfoId${i}${j}">${courseList[i].reservations[j].columns[8]}</span></td> 
                         </tr>`; 
             }
             
@@ -135,7 +135,6 @@ function displaySchedule(courseList) {
 
         var tBodyIdy= "#scheduleTable" + i;
         $(tBodyIdy).hide();
-  
     }
 }
 
@@ -150,13 +149,13 @@ function visibilityForListAndHeaders(i) {
         $("#scheduleTable" + i).show();
         $("#tableHeader" + i).show();
     }
-
 }
 
 function markTableRow(clickedId) {
 
     var getUniqueId = clickedId.split('d').pop();
-    var tableRowId = "tableRow" + getUniqueId;
+    console.log(getUniqueId);
+    var tableRowId = "tableRowId" + getUniqueId;
     document.getElementById(tableRowId).classList.add("table-info");
 }
 
@@ -167,14 +166,16 @@ function removeTableMark() {
     for (var i = 0; i < allTr.length; i++) {
         allTr[i].classList.remove("table-info")
     }
-
 }
  
 
 function displayModal(clickedId) {
+
+    $('#modalContainer').empty();
     //Ta ut unika Id:et
     var getId = clickedId.split('d').pop();
    //Splitta start- och sluttid
+    console.log(getId);
     inputTime = document.getElementById("startTimeId" + getId + " " + "endTimeId" + getId).innerText;
     var timeArray = inputTime.split("-");
     var startTime = timeArray[0].trim();
@@ -182,7 +183,7 @@ function displayModal(clickedId) {
 
     var inputDateTime = document.getElementById("dateId" + getId).innerText;
    
-    var modal = `<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    var modal = `<div class="modal fade stick-up" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
                       <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -231,7 +232,6 @@ function displayModal(clickedId) {
     document.getElementById("inputStartTimeId").defaultValue = startTime;
     document.getElementById("inputEndTimeId").defaultValue = endTime;
     document.getElementById("inputDateTimeId").defaultValue = inputDateTime;
-
 }
 
 function postToCanvas() {
@@ -254,13 +254,3 @@ function postToCanvas() {
 
     });
 }
-  
-
-
-
-
-
-
-
-
-
