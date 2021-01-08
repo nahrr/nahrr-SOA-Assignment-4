@@ -12,7 +12,7 @@ namespace Assignment4.Controllers
     [ApiController]
     public class PostToCanvasController : ControllerBase
     {
-        private const string Z = "+01:00";//TimeZone utc+1
+        private const string Z = "+01:00";//Time zone utc+1
         private const string T = "T:";
         private const string token = "Bearer 3755~YPKPwpVYGZxHgMBOur8V4akVQ5vCsOWBCThnTtiazZEGsBwUN8dQ7yW9j1ycwlzR";//Johans Token
 
