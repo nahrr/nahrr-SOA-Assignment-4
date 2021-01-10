@@ -26,11 +26,11 @@ function getValues() {
     var startDate = document.getElementById('startDate').value;
     var endDate = document.getElementById('endDate').value;
 
-    $('#errorMessage').empty();
+    $('#userMessage').empty();
     $('#tableContainer').empty();
 
     if (document.getElementById('searchBar').value.length == 0) {
-        var container = document.getElementById('errorMessage');
+        var container = document.getElementById('userMessage');
 
         var error = `<div class="alert alert-danger" role="alert">Sökfältet är tomt</div>`;
         container.innerHTML += error;
@@ -39,7 +39,7 @@ function getValues() {
 
     $.ajax({
         type: "GET",
-        url: "http://localhost:50261/api/search/" + search + "/" + startDate + "/" + endDate, // calla backend på annat sätt?
+        url: "http://localhost:50261/api/search/" + search + "/" + startDate + "/" + endDate,
         data: { searchObj: search, start: startDate, end: endDate },
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -51,7 +51,7 @@ function getValues() {
             alert("failure " + search);
         },
         error: function (response) {
-            var container = document.getElementById('errorMessage');
+            var container = document.getElementById('userMessage');
 
             var error = `<div class="alert alert-danger" role="alert">Inget resultat hittades för <i>${search}</i>. Kontrollera att din sökning är korrekt.</div>`;
             container.innerHTML += error;
@@ -75,7 +75,7 @@ function displaySchedule(courseList) {
                 <div class="mt-5"> 
                     <thead class="thead-dark">
                         <tr class="cursor-pointer" onclick="visibilityForListAndHeaders(${i})" id="superHeader${i}">
-                            <th colspan="100%"> <i class="fa fa-window-maximize"></i> ${courseList[i].courseinfo.kurskod}, ${courseList[i].courseinfo.namn}, ${courseList[i].courseinfo.kommentar}</th> 
+                            <th colspan="100%"> <i class="fa fa-window-maximize"></i>${courseList[i].courseinfo.kurskod}, ${courseList[i].courseinfo.namn}, ${courseList[i].courseinfo.kommentar} <i class="fa fa-plus float-right" id="plus${i}"></i> <i class="fa fa-minus float-right" id="minus${i}" style="display: none;"></i></th> 
                         </tr>
                         <tr id="tableHeader${i}"> 
                             <th scope="col"></th>
@@ -120,7 +120,7 @@ function displaySchedule(courseList) {
             scheduleContainer.innerHTML += table;
         }
         else {
-            var errorMsgContainer = document.getElementById('errorMessage');
+            var errorMsgContainer = document.getElementById('userMessage');
 
             var error = `<div class="alert alert-danger" role="alert">
                             Inga inbokningar för ${courseList[i].courseinfo.kurskod}, ${courseList[i].courseinfo.namn}, ${courseList[i].courseinfo.kommentar} mellan ${startDate} och ${endDate}.
@@ -143,18 +143,23 @@ function visibilityForListAndHeaders(i) {
     if ($("#scheduleTable" + i).is(":visible")) {
         $("#scheduleTable" + i).hide();
         $("#tableHeader" + i).hide();
+        $("#minus" + i).hide();
+        $("#plus" + i).show();
+        
+
     }
     else if
         ($("#scheduleTable" + i).is(":hidden")) {
         $("#scheduleTable" + i).show();
         $("#tableHeader" + i).show();
+        $("#plus" + i).hide();
+        $("#minus" + i).show();
     }
 }
 
 function markTableRow(clickedId) {
 
     var getUniqueId = clickedId.split('d').pop();
-    console.log(getUniqueId);
     var tableRowId = "tableRowId" + getUniqueId;
     document.getElementById(tableRowId).classList.add("table-info");
 }
@@ -175,7 +180,6 @@ function displayModal(clickedId) {
     //Ta ut unika Id:et
     var getId = clickedId.split('d').pop();
    //Splitta start- och sluttid
-    console.log(getId);
     inputTime = document.getElementById("startTimeId" + getId + " " + "endTimeId" + getId).innerText;
     var timeArray = inputTime.split("-");
     var startTime = timeArray[0].trim();
@@ -236,6 +240,8 @@ function displayModal(clickedId) {
 
 function postToCanvas() {
 
+    $('#userMessage').empty();
+
    const title = document.getElementById("inputTitleId").value;
    const date = document.getElementById("inputDateTimeId").value;
    const startTime = document.getElementById("inputStartTimeId").value;
@@ -246,11 +252,11 @@ function postToCanvas() {
           url: "http://localhost:50261/api/posttocanvas/" + title + "/" + date + "/" + startTime + "/" + endTime + "/" + comment
       }).then(function (data) {
 
-       // Vi kanske borde göra om errorMessage till allmän userfeedback?
-        var container = document.getElementById('errorMessage');
+    
+        var container = document.getElementById('userMessage');
 
-        var error = `<div class="alert alert-success" role="alert">Passet är nu sparat i Canvas</div>`;
-        container.innerHTML += error;
+        var userMessage = `<div class="alert alert-success" role="alert">${title} är nu sparat i Canvas</div>`;
+        container.innerHTML += userMessage;
 
     });
 }
