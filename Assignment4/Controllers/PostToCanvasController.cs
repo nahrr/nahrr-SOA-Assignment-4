@@ -22,10 +22,10 @@ namespace Assignment4.Controllers
         /// "Hämtar data från modal då en inbokning redigeras"
         /// </summary>
         /// <param name="title">Titel</param>
-        /// /// <param name="date">Datum</param>
-        /// /// <param name="startTime">Starttid</param>
-        /// /// <param name="endTime">Sluttid</param>
-        /// /// <param name="comment">Kommentar/Information</param>
+        /// <param name="date">Datum</param>
+        /// <param name="startTime">Starttid</param>
+        /// <param name="endTime">Sluttid</param>
+        /// <param name="comment">Kommentar/Information</param>
         [Route("{title}/{date}/{startTime}/{endTime}/{comment}")]
         [HttpGet]
         public void GetCanvasData(string title, string date, string startTime, string endTime, string comment)
@@ -37,10 +37,10 @@ namespace Assignment4.Controllers
         /// "Postar till data till Canvas API"
         /// </summary>
         /// <param name="title">Titel</param>
-        /// /// <param name="date">Datum</param>
-        /// /// <param name="startTime">Starttid</param>
-        /// /// <param name="endTime">Sluttid</param>
-        /// /// <param name="comment">Kommentar/Information</param>
+        /// <param name="date">Datum</param>
+        /// <param name="startTime">Starttid</param>
+        /// <param name="endTime">Sluttid</param>
+        /// <param name="comment">Kommentar/Information</param>
         private async Task PostCanvasAsync(string title, string date, string startTime, string endTime, string comment)
         {
             using (var httpClient = new HttpClient())
