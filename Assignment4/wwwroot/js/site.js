@@ -19,7 +19,7 @@ document.onreadystatechange = function setDate() {
     document.getElementById('endDate').value = lastDay;
 }
 
-// Skickar värdet från searchBar och datum till controller och returnerar en lista på scheman
+//Skickar värdet från searchBar och datumfält till controller och returnerar en lista på scheman
 function getValues() {
 
     var search = document.getElementById('searchBar').value;
@@ -59,6 +59,7 @@ function getValues() {
     });
 }
 
+//Tar emot schemalista och bygger html dynamiskt
 function displaySchedule(courseList) {
    
     var startDate = document.getElementById('startDate').value;
@@ -95,10 +96,9 @@ function displaySchedule(courseList) {
 
             for (var j = 0; j < courseList[i].reservations.length; j++) {
 
-                // Tar kurskolumen och splittar den
                 var courseNameArray = courseList[i].reservations[j].columns[5].split(",");
-                // Dynamisk lösning för att visa upp till två kursnamn
                 var secondCourseName = "";
+
                 if (courseNameArray.length > 1) {
                     secondCourseName = courseNameArray[1];
                 }
@@ -129,7 +129,6 @@ function displaySchedule(courseList) {
             errorMsgContainer.innerHTML += error;
         }
        
-        //Döljer tableHeader och tbody, testade att göra med variable
         var tableHeaderId = "#tableHeader" + i;
         $(tableHeaderId).hide();
 
@@ -138,6 +137,7 @@ function displaySchedule(courseList) {
     }
 }
 
+// Visar och döljer element för schematabell
 function visibilityForListAndHeaders(i) {
 
     if ($("#scheduleTable" + i).is(":visible")) {
@@ -157,6 +157,7 @@ function visibilityForListAndHeaders(i) {
     }
 }
 
+//Markerar tabellrad efter man trycker på redigera 
 function markTableRow(clickedId) {
 
     var getUniqueId = clickedId.split('d').pop();
@@ -164,6 +165,7 @@ function markTableRow(clickedId) {
     document.getElementById(tableRowId).classList.add("table-info");
 }
 
+//Ta bort markering efter modal har sparats eller stängts
 function removeTableMark() {
 
     var allTr = document.querySelectorAll("tr");
@@ -173,7 +175,7 @@ function removeTableMark() {
     }
 }
  
-
+//Visar en html-popup för att redigera schema
 function displayModal(clickedId) {
 
     $('#modalContainer').empty();
@@ -238,6 +240,7 @@ function displayModal(clickedId) {
     document.getElementById("inputDateTimeId").defaultValue = inputDateTime;
 }
 
+//Postar data till controller
 function postToCanvas() {
 
     $('#userMessage').empty();
