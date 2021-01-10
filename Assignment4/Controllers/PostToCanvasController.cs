@@ -18,12 +18,10 @@ namespace Assignment4.Controllers
 
         [Route("{title}/{date}/{startTime}/{endTime}/{comment}")]
         [HttpGet]
-        //Ändra return?
-        public string GetCanvasData(string title, string date, string startTime, string endTime, string comment)
+        //Tar in data från modal
+        public void GetCanvasData(string title, string date, string startTime, string endTime, string comment)
         {
-      
             _ = PostCanvasAsync(title, date, startTime, endTime, comment);
-            return "";
         }
         //Postar till Canvas
         private async Task PostCanvasAsync(string title, string date, string startTime, string endTime, string comment)
