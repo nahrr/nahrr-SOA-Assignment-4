@@ -10,20 +10,37 @@ namespace Assignment4.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    // Postar data till Canvas API som lägger in en bokning i schemat.
     public class PostToCanvasController : ControllerBase
     {
-        private const string Z = "+01:00";//Time zone utc+1
+        private const string Z = "+01:00"; //Time zone utc+1
         private const string T = "T:";
-        private const string token = "Bearer 3755~YPKPwpVYGZxHgMBOur8V4akVQ5vCsOWBCThnTtiazZEGsBwUN8dQ7yW9j1ycwlzR";//Johans Token
+        private const string token = "Bearer 3755~YPKPwpVYGZxHgMBOur8V4akVQ5vCsOWBCThnTtiazZEGsBwUN8dQ7yW9j1ycwlzR"; //Johans Token (dvs, bokningar i Canvas syns bara för honom)
 
+
+        /// <summary>
+        /// "Hämtar data från modal då en inbokning redigeras"
+        /// </summary>
+        /// <param name="title">Titel</param>
+        /// /// <param name="date">Datum</param>
+        /// /// <param name="startTime">Starttid</param>
+        /// /// <param name="endTime">Sluttid</param>
+        /// /// <param name="comment">Kommentar/Information</param>
         [Route("{title}/{date}/{startTime}/{endTime}/{comment}")]
         [HttpGet]
-        //Tar in data från modal
         public void GetCanvasData(string title, string date, string startTime, string endTime, string comment)
         {
             _ = PostCanvasAsync(title, date, startTime, endTime, comment);
         }
-        //Postar till Canvas
+
+        /// <summary>
+        /// "Postar till data till Canvas API"
+        /// </summary>
+        /// <param name="title">Titel</param>
+        /// /// <param name="date">Datum</param>
+        /// /// <param name="startTime">Starttid</param>
+        /// /// <param name="endTime">Sluttid</param>
+        /// /// <param name="comment">Kommentar/Information</param>
         private async Task PostCanvasAsync(string title, string date, string startTime, string endTime, string comment)
         {
             using (var httpClient = new HttpClient())

@@ -9,6 +9,10 @@ using Assignment4.Models;
 
 namespace Assignment4.Controllers
 {
+    /// <summary>
+    /// "Autogenererad kod för MVC-projektet"
+    /// </summary>
+    /// <returns>Views</returns>
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -19,11 +23,6 @@ namespace Assignment4.Controllers
         }
 
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }

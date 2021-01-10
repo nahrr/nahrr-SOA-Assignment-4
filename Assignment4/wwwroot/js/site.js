@@ -179,7 +179,7 @@ function displayModal(clickedId) {
     $('#modalContainer').empty();
     //Ta ut unika Id:et
     var getId = clickedId.split('d').pop();
-   //Splitta start- och sluttid
+    //Splitta start- och sluttid
     inputTime = document.getElementById("startTimeId" + getId + " " + "endTimeId" + getId).innerText;
     var timeArray = inputTime.split("-");
     var startTime = timeArray[0].trim();
@@ -250,13 +250,10 @@ function postToCanvas() {
 
       $.ajax({
           url: "http://localhost:50261/api/posttocanvas/" + title + "/" + date + "/" + startTime + "/" + endTime + "/" + comment
-      }).then(function (data) {
-
-    
+      }).then(function (data) {   
         var container = document.getElementById('userMessage');
-
         var userMessage = `<div class="alert alert-success" role="alert">${title} är nu sparat i Canvas</div>`;
-        container.innerHTML += userMessage;
 
+        container.innerHTML += userMessage;
     });
 }
