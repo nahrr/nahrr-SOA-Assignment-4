@@ -145,11 +145,9 @@ function visibilityForListAndHeaders(i) {
         $("#tableHeader" + i).hide();
         $("#minus" + i).hide();
         $("#plus" + i).show();
-        
-
     }
-    else if
-        ($("#scheduleTable" + i).is(":hidden")) {
+
+    else if ($("#scheduleTable" + i).is(":hidden")) {
         $("#scheduleTable" + i).show();
         $("#tableHeader" + i).show();
         $("#plus" + i).hide();
@@ -186,7 +184,6 @@ function displayModal(clickedId) {
     var timeArray = inputTime.split("-");
     var startTime = timeArray[0].trim();
     var endTime = timeArray[1].trim();
-
     var inputDateTime = document.getElementById("dateId" + getId).innerText;
    
     var modal = `<div class="modal fade stick-up" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -206,14 +203,14 @@ function displayModal(clickedId) {
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="date">Datum</label>
-                                        <input type="date" class="form-control" id="inputDateTimeId" placeholder="Datum" name="date">
-                                     </div>
+                                       <label for="date">Datum</label>
+                                       <input type="date" class="form-control" id="inputDateTimeId" placeholder="Datum" name="date">
+                                    </div>
 
-                                     <div class="form-group">
-                                        <label for="startTime">Starttid</label>
-                                        <input type="time" class="form-control" id="inputStartTimeId" placeholder="Starttid" name="startTime">
-                                     </div>
+                                    <div class="form-group">
+                                       <label for="startTime">Starttid</label>
+                                       <input type="time" class="form-control" id="inputStartTimeId" placeholder="Starttid" name="startTime">
+                                    </div>
 
                                     <div class="form-group">
                                         <label for="endTime">Sluttid</label>
@@ -243,7 +240,7 @@ function displayModal(clickedId) {
 //Postar data till controller
 function postToCanvas() {
 
-    $('#userMessage').empty();
+   $('#userMessage').empty();
 
    const title = document.getElementById("inputTitleId").value;
    const date = document.getElementById("inputDateTimeId").value;

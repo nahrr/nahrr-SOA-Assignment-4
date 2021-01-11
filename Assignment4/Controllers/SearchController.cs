@@ -30,7 +30,7 @@ namespace Assignment4.Controllers
         /// <param name="courseCode"> Sökt kurskod</param>
         /// <param name="startDate">Startdatum för sökningen</param>
         /// <param name="endDate"> Slutdatum för sökningen</param>
-        /// <returns>IActionResult - Statuskod Ok och lista med aktuella bokningar eller Statuskod 500</returns>
+        /// <returns>IActionResult - Statuskod Ok och lista med aktuella bokningar eller Statuskod 500.</returns>
         [Route("{courseCode}/{startDate}/{endDate}")]
         [HttpGet]
         public IActionResult GetSearchCourse(string courseCode, string startDate, string endDate)
@@ -77,6 +77,7 @@ namespace Assignment4.Controllers
         {
             var jsonData = new WebClient().DownloadString(searchUrl);
             var userObj = JObject.Parse(jsonData);
+
             List<Root> scheduleList = new List<Root>();
 
             if (((JObject)userObj).Count != 0)
